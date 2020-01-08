@@ -39,6 +39,7 @@ namespace SecureLogicApps
 
             string logicAppName = config["logicAppName"];
             string logicAppRGName = config["logicAppRGName"];
+            string subscriptionId = config["subscriptionID"];
 
             try
             {
@@ -52,7 +53,7 @@ namespace SecureLogicApps
                                     .Build();
                 
                 // construct message for Azure API call to retrieve Logic App HTTP Trigger URL
-                var url = $"https://management.azure.com/subscriptions/{creds.DefaultSubscriptionId}/resourceGroups/{logicAppRGName}/providers/Microsoft.Logic/workflows/{logicAppName}/triggers/manual/listCallbackUrl?api-version=2016-06-01";
+                var url = $"https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{logicAppRGName}/providers/Microsoft.Logic/workflows/{logicAppName}/triggers/manual/listCallbackUrl?api-version=2016-06-01";
                 var HttpMessage = new HttpRequestMessage(HttpMethod.Post, url);
 
                 // add authentication header
@@ -71,7 +72,7 @@ namespace SecureLogicApps
             }
             catch (Exception ex)
             {
-                log.LogError(ex, "Error occured");
+                log.LogError(ex, $"Error occured: subscription used = {subscriptionId}");
                 return new BadRequestObjectResult(String.Format("Error occured in function: {0}", ex.Message));
             }
         }
